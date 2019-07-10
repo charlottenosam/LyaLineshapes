@@ -1,0 +1,9 @@
+chains/
+*.pickle
+*.pyc
+*.ipynb_checkpoints
+*checkpoint*
+*cache*
+*.sh
+*.DS_Store
+*.idea
