@@ -1,0 +1,27 @@
+EBL from Khaire & Srianand 2018 (arxiv:1801.xxxxx)
+[Latest model as of January 2018]
+
+=================================
+*Folders denoted with different model names as 'Qxx' (refer to table. 1 of the paper) contain EBL files. Q18 is our fiducial model.
+ Files in each folder have names EBL_KS18_Qxx_z_yy.txt
+ Here Qxx is model name and yy is the redshift. 
+ Each file has two columns with:
+ Column1: wavelength (Angstrom);  Column2: EBL specific intensity J_nu (erg/s/cm^2/Hz/Sr)
+
+*Parameter files have photoionization and photoheating rates for H I,  He I and He II
+ (Refer to section 4.4.4 of the paper before directly using these in cosmological hydrodynamical simulations)
+
+*Gamma-ray optical depth at different redshift and energies are given for fiducial Q18 model in folder 'tau_gamma_ray'.
+ File names are tau_Q18_at_z_xx.txt, where xx denotes the redshift. 
+
+===================================
+Notes:
+Our EBL uses following important inputs:
+*Galaxy emissivity form Khaire & Srianand 2015 ApJ 805, 33
+*QSO emissivity from Khaire & Srianand 2015 MNRAS 451, L30
+*Escape fraction(z)= 1e-5/(6.5e-5+exp(-2.4z)); consistent with Khaire et al 2016 MNRAS, 457, 4051 
+*Hydrogen column density distribution from Inoue et al 2014, MNRAS, 442, 1805
+===================================
+
+
+
