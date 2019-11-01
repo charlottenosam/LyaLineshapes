@@ -38,11 +38,11 @@ def n_H(z):
 def alpha_rec_B(T):
     """Recombination rate for `case B` recombination of hydrogen.
  
-   Fitting formulae from Hui & Gnedin (1997) (in the Appendix)
-   accurate to ~2% from 3 - 10^9K
- 
-   Returns recombination rate in cm**3/s
-   """
+       Fitting formulae from Hui & Gnedin (1997) (in the Appendix)
+       accurate to ~2% from 3 - 10^9K
+     
+       Returns recombination rate in cm**3/s
+    """
     lHI = 2 * 157807.0 / T
     alpha_B = 2.753e-14 * lHI**1.5 / (1.0 + (lHI / 2.740)**0.407)**2.242
 
