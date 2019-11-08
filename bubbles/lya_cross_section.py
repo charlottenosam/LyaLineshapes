@@ -77,3 +77,17 @@ def Lya_crosssec(wave, T=1.e4*u.K, returnx=False):
         return x, sig_Lya
     else:
         return sig_Lya
+
+# =====================================================================
+
+def optical_depth_Weinberg97(z, n_HI):
+    """
+    Lya optical depth from https://ui.adsabs.harvard.edu/abs/1997ApJ...490..564W/abstract Eqn 3
+
+    for uniform IGM
+
+    tau = πe^2/(m_e c) * f_alpha lambda_alpha * n_HI/H(z)
+    """
+    tau 1.34e-17*u.cm**3/u.s * Planck15.H(z).to(1./u.s) * n_HI
+
+    return tau.value
