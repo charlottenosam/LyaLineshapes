@@ -88,6 +88,6 @@ def optical_depth_Weinberg97(z, n_HI):
 
     tau = πe^2/(m_e c) * f_alpha lambda_alpha * n_HI/H(z)
     """
-    tau 1.34e-17*u.cm**3/u.s * Planck15.H(z).to(1./u.s) * n_HI
+    tau = 1.34e-17*u.cm**3/u.s * Planck15.H(z).to(1./u.s) * n_HI
 
     return tau.value
