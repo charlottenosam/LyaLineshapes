@@ -3,7 +3,8 @@ import os
 from .utils import *
 from .lya_cross_section import *
 from .ionizing_sources import *
-from .bubbles import *
+from .bubble_properties import *
+from .opticaldepth import *
 
 # Plotting
 from matplotlib import rc_file

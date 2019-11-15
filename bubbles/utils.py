@@ -16,6 +16,8 @@ import scipy
 import scipy.interpolate
 from sklearn.neighbors import KernelDensity
 import os, glob
+import json
+import itertools as it
 
 from astropy.cosmology import Planck15
 from astropy import units as u
@@ -26,6 +28,7 @@ import bubbles
 # =====================================================================
 # Constants
 wave_Lya = 1216. * u.Angstrom
+wave_em  = np.linspace(1210, 1220., 1000) * u.Angstrom
 
 # =====================================================================
 
@@ -76,6 +79,20 @@ def wave_to_DV(wave):
 def DV_to_wave(DV):
     return wave_Lya + (DV/const.c * wave_Lya).to(u.Angstrom)
 
+def make_DV_axes(ax_wave, x, y, DV_min=-1000., DV_max=1000.):
+    # Make axis
+    ax_DV = ax_wave.twiny()
+    
+    # Plot
+    ax_DV.plot(x, y, lw=0)
+
+    # Set xlims
+    ax_DV.set_xlim(DV_min, DV_max)
+    ax_wave.set_xlim(bubbles.DV_to_wave(np.array(ax_DV.get_xlim())*u.km/u.s).value)
+    
+    ax_DV.set_xlabel('Velocity offset [km/s]')
+    
+    return ax_DV
 
 def lineshape_doublepeak(v, vcenter):
     """
@@ -101,6 +118,7 @@ def lineshape_doublepeak(v, vcenter):
     line /= np.trapz(line, v)
     return line
 
+# ---------------------------------------------------------------------
 
 def scalar_mappable(array, cmap='plasma_r'):
     """
@@ -117,3 +135,11 @@ def scalar_mappable(array, cmap='plasma_r'):
     s_m.set_array([])
 
     return s_m
+
+def dict_to_image(dictionary, x, y):
+    image = np.zeros((len(y), len(x)))
+    for (i, yy), (j, xx) in it.product(enumerate(y), enumerate(x)):
+        image[i, j] = dictionary[(xx,yy)]
+        
+    return image
+# ---------------------------------------------------------------------
