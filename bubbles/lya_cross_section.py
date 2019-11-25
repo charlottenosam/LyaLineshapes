@@ -45,7 +45,7 @@ class lya_cross_section(object):
         self.v_therm   = self.v_thermal()
         self.dfreq_Lya = (freq_Lya * self.v_therm / const.c).to(u.Hz)
 
-        # 
+        # Voigt parameter
         self.av_T = self.av()
 
         # Cross-section peak
@@ -54,12 +54,41 @@ class lya_cross_section(object):
         return
 
     def av(self):
-        return 4.7e-4 * (self.T.value/1.e4)**-0.5
+        return 4.7e-4 * (self.T.value/1.e4)**(-0.5)
 
-    def Voigt(self, x):    
+    def Voigt_badapprox(self, x): 
+        """Clumsy approximation for Voigt
+        """   
         phix = np.exp(-x**2.) + self.av_T/np.sqrt(np.pi)/x**2.
         phix[phix > 1.] = 1.
         return phix
+
+
+    def Voigt(self, x):
+        """Voigt function approximation from Tasitsiomi 2006
+        
+        https://ui.adsabs.harvard.edu/abs/2006ApJ...645..792T/abstract
+        
+        Good to >1% for T>2K
+        
+        Args:
+            x (ndarray): dimensionless frequency
+        
+        Returns:
+            Voigt function
+        """
+        
+        z = (x**2. - 0.855)/(x**2. + 3.42)
+        
+        q = z * (1 + 21./x**2.) * self.av_T/np.pi/(x**2. + 1) * \
+             (0.1117 + z*(4.421 + z*(-9.207 + 5.674*z)))
+        
+        phix = np.exp(-x**2.)/1.77245385 
+        
+        phix[z > 0] += q[z > 0]
+
+        return phix*np.sqrt(np.pi)
+
 
     def v_thermal(self):
         """

@@ -1,11 +1,12 @@
-# =====================================================================
 # utils.py
-#
-# Useful functions for blowing bubbles
-#
-# HISTORY:
-#   Started: 2019-10-17 C Mason (CfA)
-#
+"""Useful functions for blowing bubbles
+
+History:
+  Started: 2019-10-17 C Mason (CfA)
+
+
+"""
+
 # =====================================================================
 import matplotlib as mpl
 from functools import reduce
@@ -32,11 +33,22 @@ wave_em  = np.linspace(1210, 1220., 1000) * u.Angstrom
 
 # =====================================================================
 
-def n_H(z):
+def n_H(z, X_p=0.75):
+    """IGM hydrogen number density
+
+    Args:
+        z (ndarray): redshift
+
+    Returns:
+        number density in cm^-3
+
+    Cen & Haiman 2000::
+    >>> 8.5e-5 * ((1. + z)/8.)**3. / (u.cm**3.)
+
+
     """
-    IGM hydrogen density
-    """
-    return 8.5e-5 * ((1. + z)/8.)**3. / (u.cm**3.)
+    return (X_p * Planck15.Ob0 * Planck15.critical_density0 * (1+z)**3. / const.m_p).to(u.cm**(-3.))
+
 
 def alpha_rec_B(T):
     """Recombination rate for `case B` recombination of hydrogen.
