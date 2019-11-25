@@ -69,7 +69,7 @@ class lya_cross_section(object):
         
         https://ui.adsabs.harvard.edu/abs/2006ApJ...645..792T/abstract
         
-        Good to >1% for T>2K
+        Good to >1% for T>2K. Correctly normalized to return H(av, x).
         
         Args:
             x (ndarray): dimensionless frequency
@@ -87,7 +87,7 @@ class lya_cross_section(object):
         
         phix[z > 0] += q[z > 0]
 
-        return phix*np.sqrt(np.pi)
+        return phix * np.sqrt(np.pi)
 
 
     def v_thermal(self):
