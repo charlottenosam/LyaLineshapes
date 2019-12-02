@@ -82,6 +82,7 @@ def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7.,
         
     return tau
 
+
 def make_tau_grid(R_ion, xHI_01, r_slope=2., z_s=7., z_min=6.):
     """
     Make tau_HII, tau_IGM, tau_total for grid of R_ion, xHI(r=0.1 Mpc)
@@ -103,3 +104,150 @@ def make_tau_grid(R_ion, xHI_01, r_slope=2., z_s=7., z_min=6.):
     tau_tab = tau_HII, tau_IGM, tau_total
     return tau_tab
 
+
+# ------------------------------------------------------------
+
+def optical_depth(wave_em, T, z_min, z_max, z_s=7.,
+                  inside_HII=True, C_HII=3., xtab_len=100,
+                  Ndot_ion=1.e57/u.s):
+    """
+    Lya optical depth as a function of wavelength 
+    using definition of optical depth and Lya cross-section
+    """
+    crosssec = bubbles.lya_cross_section(T)   
+    
+    # Redshift array
+    ztab_ends = np.array([z_min, z_max])
+    
+    # Observed wavelength
+    wave_obs = wave_em * (1. + z_s)
+        
+    # Range of redshifted wavelength and x
+    wave_z_ends = wave_obs[:,None]/(1+ztab_ends)
+    x_z_ends    = crosssec.Lya_wave_to_x(wave_z_ends)
+    
+    tau = np.zeros(len(wave_obs))
+    for ww, w_obs in enumerate(wave_obs):
+                
+        # Make xtab 
+        if (x_z_ends[ww] < 0).all():
+            xtab = -np.logspace(np.log10(-x_z_ends[ww].min()),np.log10(-x_z_ends[ww].max()),xtab_len)
+            xtab = np.sort(xtab)
+        elif (x_z_ends[ww] > 0).all():
+            xtab = np.logspace(np.log10(x_z_ends[ww].min()),np.log10(x_z_ends[ww].max()),xtab_len)
+            xtab = np.sort(xtab)
+        else:       
+            xtab_neg = -np.logspace(-1,np.log10(-x_z_ends[ww].min()),int(xtab_len/2))
+            xtab_pos = np.logspace(-1,np.log10(x_z_ends[ww].max()),int(xtab_len/2))
+            xtab     = np.sort(np.concatenate((xtab_neg, xtab_pos)))
+        
+        # Get wave_redshift
+        wave_redshift = crosssec.Lya_x_to_wave(xtab)
+
+        # Get z tab
+        ztab = w_obs/wave_redshift - 1.
+
+        # Residual neutral fraction
+        if inside_HII:
+            r   = bubbles.comoving_distance_from_source_Mpc(ztab, z_s)
+            xHI = bubbles.xHI_R(r, z_s, fesc=0.5*Ndot_ion/(1.e57/u.s), C=C_HII, T=T.value) # Only source flux
+        else:
+            xHI = 1.
+            
+        # Cross-section
+        lya_cross = crosssec.Lya_crosssec_x(xtab)
+                           
+        # Calculate optical depth
+        prefac = (const.c * bubbles.dt_dz(ztab) * xHI * bubbles.n_H(ztab)).to(1./u.cm**2.)
+        dtau   = prefac * lya_cross
+    
+        tau[ww] = np.trapz(dtau, ztab)
+        
+    return tau
+
+
+def make_tau(Ndot_ion, source_age, z_s=7., z_min=6.):
+    """Make optical depth given Nion and source age
+    """
+
+    R_ion = bubbles.R_bubble_CenHaiman2000(z_s=z_s, Ndot_ion=Ndot_ion, t_source=source_age)
+    z_ion = bubbles.z_at_comoving_distance(R_ion, z_1=z_s)
+
+    # inside bubble
+    tau_HII = optical_depth(wave_em, z_min=z_ion, z_max=z_s, z_s=z_s,
+                            inside_HII=True, T=1.e4*u.K, Ndot_ion=Ndot_ion)
+
+    # in IGM
+    tau_IGM = optical_depth(wave_em, z_min=z_min, z_max=z_ion, z_s=z_s,
+                            inside_HII=False, T=1.*u.K, Ndot_ion=Ndot_ion)
+
+    tau_total = tau_IGM + tau_HII
+    
+    tau_tab = tau_HII, tau_IGM, tau_total
+
+    return tau_tab, R_ion
+
+
+def plot_tau(tau_tab, wave_em, R_ion, transmission=False, 
+             ax=None, annotate=True, label=None):
+    """Plot optical depths
+    """
+
+    if len(tau_tab) == 3:
+        tau_HII, tau_IGM, tau_total = tau_tab
+    
+    if transmission:
+        if len(tau_tab) == 3:
+            tau_HII, tau_IGM, tau_total = np.exp(-tau_HII), np.exp(-tau_IGM), np.exp(-tau_total)
+        else:
+            tau_tab = np.exp(-tau_tab)
+            
+        ylabel = r'Ly$\alpha$ transmission, $e^{-\tau_{\mathrm{Ly}\alpha}}$'
+    else:
+        ylabel = r'Optical depth $\tau_{\mathrm{Ly}\alpha}$'
+    
+    # Make DV table
+    DV_tab = bubbles.wave_to_DV(wave_em)
+
+    if ax is None:
+        fig, ax_wave = plt.subplots(1,1)
+    else:
+        ax_wave=ax
+
+    # DV plot
+    ax_DV = ax_wave.twiny()
+    
+    if len(tau_tab) == 3:
+        ax_wave.plot(wave_em, tau_HII, lw=1, ls='dashed', label='inside HII region')
+        ax_wave.plot(wave_em, tau_IGM, lw=1, ls='dotted', label='IGM')
+        ax_wave.plot(wave_em, tau_total, label='total')
+
+        ax_DV.semilogy(DV_tab, tau_total, label='total', lw=0)
+    
+    else:
+        ax_wave.plot(wave_em, tau_tab, label=label)
+
+        ax_DV.semilogy(DV_tab, tau_tab, lw=0)        
+
+    ax_wave.legend(loc='upper right')#, frameon=True)
+    
+    if transmission:
+        plt.yscale('linear')
+        ax_wave.set_ylim(-0.1, 1.1)
+    else:
+        plt.yscale('log')
+        ax_wave.set_ylim(1e-6, 1.2e6)
+        
+    ax_DV.set_xlim(-1000, 1000)
+    ax_wave.set_xlim(bubbles.DV_to_wave(np.array(ax_DV.get_xlim())*u.km/u.s).value)
+
+    if annotate:
+        ax_wave.annotate('$R_{HII}=%.1f$ Mpc' % R_ion.value, xy=(0.98, 0.05), xycoords='axes fraction', ha='right')
+    
+    ax_wave.set_ylabel(ylabel)
+    ax_wave.set_xlabel('Wavelength [A]')
+    ax_DV.set_xlabel('Velocity offset [km/s]')
+    
+    plt.tight_layout()
+    
+    return
