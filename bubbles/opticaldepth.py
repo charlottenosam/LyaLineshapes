@@ -251,3 +251,7 @@ def plot_tau(tau_tab, wave_em, R_ion, transmission=False,
     plt.tight_layout()
     
     return
+
+def Ix_ME1998(x):
+	I = x**4.5/(1-x) + 9./7*x**3.5 + 9./5*x**2.5 + 3*x**1.5 + 9*x**0.5 - 4.5*np.log((1+x**0.5)/(1-x**0.5))
+	return I
