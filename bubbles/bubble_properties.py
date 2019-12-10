@@ -66,19 +66,19 @@ def xHI_CenHaiman2000(z, z_s=7., C_HII=3., Ndot_ion=1.e57/u.s):
     return xHI
 
 def xHI_R(r, z_s, fesc=1., C=3., T=1e4, 
-          J_bg=False, qso=True, alpha=-1.8):
+          J_bg=0., qso=True, alpha=-1.8):
     """
     Neutral fraction from source
     (Mesinger+04)
     
     for fesc = 0.5, Nion = 1e-57/s
+
+    Args:
+        J_bg (float): scaling of average UV background
     """    
     J_source_integrand = bubbles.L_nu(nu_tab, qso=qso, alpha=alpha) * sigma_ion/(bubbles.h_erg_s * nu_tab)
     Gamma12_source     = fesc/(4. * np.pi * r**2.) * np.trapz(J_source_integrand, nu_tab)
-    if J_bg:
-        Gamma12_background = bubbles.Gamma12(z_s) / u.s
-    else:
-        Gamma12_background = 0. / u.s
+    Gamma12_background = J_bg * bubbles.Gamma12(z_s) / u.s
 
     xHI = C * bubbles.n_H(z_s) * bubbles.alpha_rec_B(T)/(Gamma12_background + Gamma12_source)
     
