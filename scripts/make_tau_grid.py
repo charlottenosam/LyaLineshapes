@@ -6,7 +6,8 @@
 # HISTORY:
 #   Started: 2019-11-14 C Mason (CfA)
 #
-#
+# Takes ~40 mins on hobnob
+# 
 # python make_tau_grid.py &
 # python make_tau_grid.py --r_slope 0. &
 # python make_tau_grid.py --z_s 8. &
@@ -67,7 +68,7 @@ print(' - Minimum redshift: z_min = %.1f' % z_min)
 # =====================================================================
 
 # R_ion_tab  = np.arange(0.1, 10, 0.2) * u.Mpc
-R_ion_tab  = np.arange(0.1, 5., 0.2) * u.Mpc # proper
+R_ion_tab  = np.arange(0.01, 5.1, 0.1) * u.Mpc # proper
 xHI_01_tab = 10**np.arange(-9, 0.5, 0.5) #np.logspace(-9, 0, 10)
 
 # =====================================================================
