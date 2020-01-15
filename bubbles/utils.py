@@ -89,9 +89,14 @@ def comoving_distance_from_source_Mpc(z_2, z_1):
     R_com = (z_1 - z_2)*(const.c / Planck15.H(z=z_1)).to(u.Mpc)
     return R_com
 
-def z_at_comoving_distance(R_com, z_1=7.):
+def z_at_proper_distance(R_p, z_1=7.):
     R_H = (const.c / Planck15.H(z=z_1)).to(u.Mpc)
+    R_com = R_p * (1+z_1)
     return z_1 - R_com/R_H
+
+# def z_at_comoving_distance(R_com, z_1=7.):
+#     R_H = (const.c / Planck15.H(z=z_1)).to(u.Mpc)
+#     return z_1 - R_com/R_H
 
 # ---------------------------------------------------------------------
 # Emission lines

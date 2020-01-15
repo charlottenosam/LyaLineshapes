@@ -66,7 +66,8 @@ print(' - Minimum redshift: z_min = %.1f' % z_min)
 
 # =====================================================================
 
-R_ion_tab  = np.arange(0.1, 10, 0.2) * u.Mpc
+# R_ion_tab  = np.arange(0.1, 10, 0.2) * u.Mpc
+R_ion_tab  = np.arange(0.1, 5., 0.2) * u.Mpc # proper
 xHI_01_tab = 10**np.arange(-9, 0.5, 0.5) #np.logspace(-9, 0, 10)
 
 # =====================================================================

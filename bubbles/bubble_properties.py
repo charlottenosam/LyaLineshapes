@@ -56,10 +56,11 @@ def xHI_CenHaiman2000(z, z_s=7., C_HII=3., Ndot_ion=1.e57/u.s):
     TODO: assumes quasar ionizing spectrum
 
     """
-    r = bubbles.comoving_distance_from_source_Mpc(z, z_s)
-    
+    r_com = bubbles.comoving_distance_from_source_Mpc(z, z_s)
+    r_p   = r_com / (1+z_s)
+
     # Neutral fraction
-    xHI = 1.e-6 * C_HII * (r/1/u.Mpc)**2. * (Ndot_ion/1.e57*u.s)**-1. * ((1.+z)/8.)**3.
+    xHI = 1.e-6 * C_HII * (r_p/1/u.Mpc)**2. * (Ndot_ion/1.e57*u.s)**-1. * ((1.+z)/8.)**3.
     
     xHI[xHI > 1.] = 1.
     
@@ -68,6 +69,8 @@ def xHI_CenHaiman2000(z, z_s=7., C_HII=3., Ndot_ion=1.e57/u.s):
 def xHI_R(r, z_s, fesc=1., C=3., T=1e4, 
           J_bg=0., qso=True, alpha=-1.8):
     """
+    R is proper distance
+
     Neutral fraction from source
     (Mesinger+04)
     

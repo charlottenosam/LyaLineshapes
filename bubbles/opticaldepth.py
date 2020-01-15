@@ -66,8 +66,9 @@ def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7.,
 
         # Residual neutral fraction
         if inside_HII:
-            r   = bubbles.comoving_distance_from_source_Mpc(ztab, z_s)
-            xHI = bubbles.xHI_approx(xHI_01, r, R_ion, r_slope=r_slope)        
+            r_com = bubbles.comoving_distance_from_source_Mpc(ztab, z_s)
+            r_p   = r_com / (1+z_s)
+            xHI = bubbles.xHI_approx(xHI_01, r_p, R_ion, r_slope=r_slope)        
         else:
             xHI = 1.
             
@@ -87,7 +88,7 @@ def make_tau_grid(R_ion, xHI_01, r_slope=2., z_s=7., z_min=6.):
     """
     Make tau_HII, tau_IGM, tau_total for grid of R_ion, xHI(r=0.1 Mpc)
     """
-    z_ion = bubbles.z_at_comoving_distance(R_ion, z_1=z_s)
+    z_ion = bubbles.z_at_proper_distance(R_ion, z_1=z_s)
 
     # inside bubble
     tau_HII = optical_depth_grid(bubbles.wave_em, z_min=z_ion, z_max=z_s, z_s=z_s,
@@ -149,8 +150,9 @@ def optical_depth(wave_em, T, z_min, z_max, z_s=7.,
 
         # Residual neutral fraction
         if inside_HII:
-            r   = bubbles.comoving_distance_from_source_Mpc(ztab, z_s)
-            xHI = bubbles.xHI_R(r, z_s, fesc=0.5*Ndot_ion/(1.e57/u.s), C=C_HII, T=T.value) # Only source flux
+            r_com = bubbles.comoving_distance_from_source_Mpc(ztab, z_s)
+            r_p   = r_com / (1+z_s)
+            xHI   = bubbles.xHI_R(r_p, z_s, fesc=0.5*Ndot_ion/(1.e57/u.s), C=C_HII, T=T.value) # Only source flux
         else:
             xHI = 1.
             
@@ -166,12 +168,12 @@ def optical_depth(wave_em, T, z_min, z_max, z_s=7.,
     return tau
 
 
-def make_tau(Ndot_ion, source_age, z_s=7., z_min=6.):
+def make_tau(Ndot_ion, source_age, wave_em, z_s=7., z_min=6.):
     """Make optical depth given Nion and source age
     """
 
     R_ion = bubbles.R_bubble_CenHaiman2000(z_s=z_s, Ndot_ion=Ndot_ion, t_source=source_age)
-    z_ion = bubbles.z_at_comoving_distance(R_ion, z_1=z_s)
+    z_ion = bubbles.z_at_proper_distance(R_ion, z_1=z_s)
 
     # inside bubble
     tau_HII = optical_depth(wave_em, z_min=z_ion, z_max=z_s, z_s=z_s,
@@ -188,8 +190,8 @@ def make_tau(Ndot_ion, source_age, z_s=7., z_min=6.):
     return tau_tab, R_ion
 
 
-def plot_tau(tau_tab, wave_em, R_ion, transmission=False, 
-             ax=None, annotate=True, label=None):
+def plot_tau(tau_tab, wave_em, R_ion, transmission=False, vlim=1000,
+             ax=None, annotate=True, annotation=None, label=None):
     """Plot optical depths
     """
 
@@ -238,11 +240,15 @@ def plot_tau(tau_tab, wave_em, R_ion, transmission=False,
         plt.yscale('log')
         ax_wave.set_ylim(1e-6, 1.2e6)
         
-    ax_DV.set_xlim(-1000, 1000)
+    ax_DV.set_xlim(-vlim, vlim)
     ax_wave.set_xlim(bubbles.DV_to_wave(np.array(ax_DV.get_xlim())*u.km/u.s).value)
 
     if annotate:
-        ax_wave.annotate('$R_{HII}=%.1f$ Mpc' % R_ion.value, xy=(0.98, 0.05), xycoords='axes fraction', ha='right')
+        if annotation is None:
+            annotation = '$R_{HII}=%.1f$ Mpc' % R_ion.value
+        else:
+            annotation = annotation
+        ax_wave.annotate(annotation, xy=(0.98, 0.05), xycoords='axes fraction', ha='right')
     
     ax_wave.set_ylabel(ylabel)
     ax_wave.set_xlabel('Wavelength [A]')
