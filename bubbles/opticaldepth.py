@@ -191,7 +191,8 @@ def make_tau(Ndot_ion, source_age, wave_em, z_s=7., z_min=6.):
 
 
 def plot_tau(tau_tab, wave_em, R_ion, transmission=False, vlim=1000,
-             ax=None, annotate=True, annotation=None, label=None):
+             ax=None, annotate=True, annotation=None, 
+             lw=2, ls='solid', label=None):
     """Plot optical depths
     """
 
@@ -227,7 +228,7 @@ def plot_tau(tau_tab, wave_em, R_ion, transmission=False, vlim=1000,
         ax_DV.semilogy(DV_tab, tau_total, label='total', lw=0)
     
     else:
-        ax_wave.plot(wave_em, tau_tab, label=label)
+        ax_wave.plot(wave_em, tau_tab, lw=lw, ls=ls, label=label)
 
         ax_DV.semilogy(DV_tab, tau_tab, lw=0)        
 
@@ -245,10 +246,10 @@ def plot_tau(tau_tab, wave_em, R_ion, transmission=False, vlim=1000,
 
     if annotate:
         if annotation is None:
-            annotation = '$R_{HII}=%.1f$ Mpc' % R_ion.value
+            annotation = '$R_{HII}=%.1f$ pMpc' % R_ion.value
         else:
             annotation = annotation
-        ax_wave.annotate(annotation, xy=(0.98, 0.05), xycoords='axes fraction', ha='right')
+        ax_wave.annotate(annotation, xy=(0.98, 0.05), xycoords='axes fraction', ha='right', backgroundcolor='w')
     
     ax_wave.set_ylabel(ylabel)
     ax_wave.set_xlabel('Wavelength [A]')
