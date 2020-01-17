@@ -150,7 +150,7 @@ def lineshape_doublepeak(v, vcenter):
 
 # ---------------------------------------------------------------------
 
-def scalar_mappable(array, cmap='plasma_r'):
+def scalar_mappable(array, cmap='plasma_r', rescale=0.):
     """
     Map from array to colors for plotting lines
 
@@ -158,7 +158,7 @@ def scalar_mappable(array, cmap='plasma_r'):
     plt.colorbar(s_m)
     """
     # Normalise
-    norm = mpl.colors.Normalize(vmin=np.min(array), vmax=np.max(array))
+    norm = mpl.colors.Normalize(vmin=(1-rescale)*np.min(array), vmax=(1+rescale)*np.max(array))
 
     # create ScalarMappable and initialize a data structure
     s_m = mpl.cm.ScalarMappable(cmap=cmap, norm=norm)
