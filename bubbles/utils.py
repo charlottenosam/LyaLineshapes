@@ -56,6 +56,7 @@ def alpha_rec_B(T):
        Fitting formulae from Hui & Gnedin (1997) (in the Appendix)
        accurate to ~0.7% from 1 - 10^9K
      
+        input T unitless (but in K)
        Returns recombination rate in cm**3/s
     """
     lHI = 2 * 157807.0 / T
@@ -69,6 +70,8 @@ def alpha_rec_A(T):
        Fitting formulae from Hui & Gnedin (1997) (in the Appendix)
        accurate to ~2% from 3 - 10^9K
      
+        input T unitless (but in K)
+
        Returns recombination rate in cm**3/s
     """
     lHI = 2 * 157807.0 / T
