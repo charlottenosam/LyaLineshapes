@@ -123,7 +123,7 @@ def make_DV_axes(ax_wave, x, y, DV_min=-1000., DV_max=1000.):
     ax_DV.set_xlim(DV_min, DV_max)
     ax_wave.set_xlim(bubbles.DV_to_wave(np.array(ax_DV.get_xlim())*u.km/u.s).value)
     
-    ax_DV.set_xlabel('Velocity offset [km/s]')
+    ax_DV.set_xlabel(r'Velocity offset, $\Delta v$ [km/s]')
     
     return ax_DV
 
