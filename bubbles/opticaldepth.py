@@ -152,7 +152,7 @@ def optical_depth(wave_em, T, z_min, z_max, z_s=7.,
         if inside_HII:
             r_com = bubbles.comoving_distance_from_source_Mpc(ztab, z_s)
             r_p   = r_com / (1+z_s)
-            xHI   = bubbles.xHI_R(r_p, z_s, fesc=0.5*Ndot_ion/(1.e57/u.s), C=C_HII, T=T.value) # Only source flux
+            xHI   = bubbles.xHI_R(r=r_p, z_s=z_s, Ndot_ion=Ndot_ion, fesc=1., J_bg=1., C=C_HII, T=T.value)    
         else:
             xHI = 1.
             
@@ -168,20 +168,26 @@ def optical_depth(wave_em, T, z_min, z_max, z_s=7.,
     return tau
 
 
-def make_tau(Ndot_ion, source_age, wave_em, z_s=7., z_min=6.):
+def make_tau(Ndot_ion_total, source_age, wave_em, z_s=7., z_min=6., C=3, R_type='CH00'):
     """Make optical depth given Nion and source age
     """
 
-    R_ion = bubbles.R_bubble_CenHaiman2000(z_s=z_s, Ndot_ion=Ndot_ion, t_source=source_age)
+    if R_type == 'CH00':
+        R_ion = bubbles.R_bubble_CenHaiman2000(z_s=z_s, Ndot_ion=Ndot_ion_total, t_source=source_age)
+    else:
+        # Find full ionized bubble
+        R3 = scipy.integrate.odeint(bubbles.dRion3_dt, y0=0., t=[0, source_age.value], args=(z_s, Ndot_ion_total, C), tfirst=True)
+        R_ion = R3.T[0][1]**(1/3.) * u.Mpc
+
     z_ion = bubbles.z_at_proper_distance(R_ion, z_1=z_s)
 
     # inside bubble
-    tau_HII = optical_depth(wave_em, z_min=z_ion, z_max=z_s, z_s=z_s,
-                            inside_HII=True, T=1.e4*u.K, Ndot_ion=Ndot_ion)
+    tau_HII = optical_depth(wave_em, z_min=z_ion, z_max=z_s, z_s=z_s, 
+                            inside_HII=True, T=1.e4*u.K, C_HII=C,Ndot_ion=Ndot_ion_total)
 
     # in IGM
     tau_IGM = optical_depth(wave_em, z_min=z_min, z_max=z_ion, z_s=z_s,
-                            inside_HII=False, T=1.*u.K, Ndot_ion=Ndot_ion)
+                            inside_HII=False, T=1.*u.K, C_HII=C, Ndot_ion=Ndot_ion_total)
 
     tau_total = tau_IGM + tau_HII
     
