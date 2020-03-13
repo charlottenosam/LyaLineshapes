@@ -84,7 +84,7 @@ def xHI_R(r, z_s, Ndot_ion, fesc=1., C=3., T=1e4,
     
     J_source           = fesc * Ndot_ion * (alpha/(alpha - 3)) * sigma_ion0
 
-    Gamma12_source     = fesc/(4. * np.pi * r**2.) * J_source
+    Gamma12_source     = 1./(4. * np.pi * r**2.) * J_source
     Gamma12_background = J_bg * bubbles.Gamma12(z_s) / u.s
 
     xHI = C * bubbles.n_H(z_s) * bubbles.alpha_rec_B(T)/(Gamma12_background + Gamma12_source)
