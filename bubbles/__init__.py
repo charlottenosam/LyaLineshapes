@@ -5,6 +5,7 @@ from .lya_cross_section import *
 from .ionizing_sources import *
 from .bubble_properties import *
 from .opticaldepth import *
+from .bluepeak_inference import *
 
 # Plotting
 from matplotlib import rc_file

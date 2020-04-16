@@ -64,8 +64,42 @@ def L_nu(nu, qso=True, alpha=-1.8):
         L_nu = 2.34e31 * (nu/nu_H)**alpha
     return L_nu * u.erg/u.s/u.Hz
 
+
 def Ndot_ion_from_Lnu(nu, fesc=1., qso=True, alpha=-1.8):
     integrand = L_nu(nu, qso=qso, alpha=alpha) /(h_erg_s * nu)
     return fesc * np.trapz(integrand, nu).to(1/u.s)
 
+
+def Muv_to_Nion(Muv, z, alpha_s=-2., beta=-2):
+    """
+    Convert Muv to Nion [s^-1]
+    """
+    
+    Lnu_912 = Muv_to_Lnu(Muv, z, beta=beta)
+    Nion    = Lnu_912/const.h/-alpha_s
+    return Nion.to(1/u.s)
+
+
+def Muv_to_Lnu(Muv, z, beta=-2.):
+    """
+    Convert UV magnitude to L_912 (nu)
+    """
+    
+    lum_dist = Planck15.luminosity_distance(z)
+
+    # k-correction http://adsabs.harvard.edu/full/2000A%26A...353..861W
+    K_corr = -((beta + 1) * 2.5 * np.log10(1.0 + z))    
+    
+    # Apparent mag
+    mab = Muv + 5.0 * (np.log10(lum_dist.to(u.pc).value) - 1.0) - K_corr
+
+    f0      = 3.631E-20*u.erg/u.s/u.Hz/u.cm**2.
+    c       = 3.E5*u.km/u.s
+    wave912 = 912.*u.Angstrom
+    
+    fnu_1500 = f0 * 10**(-0.4*mab)
+    fnu_912  = fnu_1500 * (wave912/1500/u.Angstrom)**(beta+2.)
+    Lnu_912  = fnu_912 * 4*np.pi * lum_dist**2.
+    
+    return Lnu_912.to(u.erg/u.s/u.Hz)
 

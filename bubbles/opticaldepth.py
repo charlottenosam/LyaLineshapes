@@ -41,11 +41,12 @@ def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7.,
         
     # Range of redshifted wavelength and x
     wave_z_ends = wave_obs[:,None]/(1+ztab_ends)
-    x_z_ends    = crosssec.Lya_wave_to_x(wave_z_ends)
+    x_z_ends    = crosssec.Lya_wave_to_x(wave_z_ends).value
     
     tau = np.zeros(len(wave_obs))
     for ww, w_obs in enumerate(wave_obs):
                 
+
         # Make xtab 
         if (x_z_ends[ww] < 0).all():
             xtab = -np.logspace(np.log10(-x_z_ends[ww].min()),np.log10(-x_z_ends[ww].max()),100)
@@ -125,7 +126,7 @@ def optical_depth(wave_em, T, z_min, z_max, z_s=7.,
         
     # Range of redshifted wavelength and x
     wave_z_ends = wave_obs[:,None]/(1+ztab_ends)
-    x_z_ends    = crosssec.Lya_wave_to_x(wave_z_ends)
+    x_z_ends    = crosssec.Lya_wave_to_x(wave_z_ends).value
     
     tau = np.zeros(len(wave_obs))
     for ww, w_obs in enumerate(wave_obs):

@@ -70,6 +70,9 @@ class lya_cross_section(object):
         https://ui.adsabs.harvard.edu/abs/2006ApJ...645..792T/abstract
         
         Good to >1% for T>2K. Correctly normalized to return H(av, x).
+
+        int(phix)  = 1
+        int(Voigt) = sqrt(pi)
         
         Args:
             x (ndarray): dimensionless frequency

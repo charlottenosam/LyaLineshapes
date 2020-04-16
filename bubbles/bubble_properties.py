@@ -126,16 +126,12 @@ def dRion3_dt(t, R3, z_s0=10, Ndot_ion=1.e55/u.s,
     
     # At age of source, t, what is redshift?
     t_now = t*u.yr + t_source_on
-    if type(t_now.value) is float:
+
+    if t_now.size == 1:
         z_tab_sourceage = z_at_value(Planck15.age, t_now)
     else:   
         z_tab_sourceage = np.array([z_at_value(Planck15.age, time) for time in t_now])
      
-    # try:
-    #     z_tab_sourceage = np.array([z_at_value(Planck15.age, time) for time in t_now])
-    # except:
-    #     z_tab_sourceage = z_at_value(Planck15.age, t_now)
-
     R = R3**(1./3.) * u.Mpc
     
 #     # Ndot_ion
@@ -175,40 +171,6 @@ def R_optically_thin(z, Ndot_ion, alpha_s, reccase='B',
     R_alpha2 = fesc/4./np.pi * sigma_ion0 * Ndot_ion * (alpha_s/(alpha_s - 3)) / (gamma_lim - J_bg*bubbles.Gamma12(z)/u.s)
     
     return np.sqrt(R_alpha2).to(u.Mpc)
-
-
-def Muv_to_Lnu(Muv, z, beta=-2.):
-    """
-    Convert UV magnitude to L_912 (nu)
-    """
-    
-    lum_dist = Planck15.luminosity_distance(z)
-
-    # k-correction http://adsabs.harvard.edu/full/2000A%26A...353..861W
-    K_corr = -((beta + 1) * 2.5 * np.log10(1.0 + z))    
-    
-    # Apparent mag
-    mab = Muv + 5.0 * (np.log10(lum_dist.to(u.pc).value) - 1.0) - K_corr
-
-    f0      = 3.631E-20*u.erg/u.s/u.Hz/u.cm**2.
-    c       = 3.E5*u.km/u.s
-    wave912 = 912.*u.Angstrom
-    
-    fnu_1500 = f0 * 10**(-0.4*mab)
-    fnu_912  = fnu_1500 * (wave912/1500/u.Angstrom)**(beta+2.)
-    Lnu_912  = fnu_912 * 4*np.pi * lum_dist**2.
-    
-    return Lnu_912.to(u.erg/u.s/u.Hz)
-
-
-def Muv_to_Nion(Muv, z, alpha_s=-1.8, beta=-2):
-    """
-    Convert Muv to Nion [s^-1]
-    """
-    
-    Lnu_912 = Muv_to_Lnu(Muv, z, beta=beta)
-    Nion    = Lnu_912/const.h/-alpha_s
-    return Nion.to(1/u.s)
 
 
 def blue_velocity_lim(R_alpha, z):
