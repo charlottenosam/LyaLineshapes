@@ -6,11 +6,9 @@
 # HISTORY:
 #   Started: 2020-04-14 C Mason (CfA)
 # 
-# python make_tau_grid.py &
-# python make_tau_grid.py --r_slope 0. &
-# python make_tau_grid.py --z_s 8. &
 #
-# %run bluepeak_inference_dynesty 'res_nobg' --maxiter 1000 --fix_bg
+# %run bluepeak_inference_dynesty 'res_nobg' --fix_bg --maxiter 1000
+#
 # =====================================================================
 import matplotlib as mpl
 import matplotlib.pylab as plt
@@ -41,7 +39,7 @@ import ipyparallel as ipp
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 # To use multiprocessing run following command:
-# > ipcluster start -n 7
+# > ipcluster start -n 7 &
 rc = ipp.Client()
 nprocs = len(rc.ids)
 print(rc.ids)
@@ -118,7 +116,12 @@ with ProcessPoolExecutor(max_workers=npool) as executor:
                             pool=executor, queue_size=npool,
                             bound='multi', sample='rwalk')
     
-    sampler.run_nested(dlogz_init=0.001, nlive_init=500, maxiter=maxiter, use_stop=False)#wt_kwargs={'pfrac': 1.0})
+    sampler.run_nested(
+    					# dlogz_init=0.001, nlive_init=500, 
+    					maxiter=maxiter, 
+    					use_stop=False, 
+    					# wt_kwargs={'pfrac': 1.0}
+    					)
     
     res = sampler.results        
     pickle.dump(res, open(chain_file,"wb"))
