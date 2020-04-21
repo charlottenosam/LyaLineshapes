@@ -44,8 +44,7 @@ def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7.,
     x_z_ends    = crosssec.Lya_wave_to_x(wave_z_ends).value
     
     tau = np.zeros(len(wave_obs))
-    for ww, w_obs in enumerate(wave_obs):
-                
+    for ww, w_obs in enumerate(wave_obs):      
 
         # Make xtab 
         if (x_z_ends[ww] < 0).all():
@@ -69,7 +68,7 @@ def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7.,
         if inside_HII:
             r_com = bubbles.comoving_distance_from_source_Mpc(ztab, z_s)
             r_p   = r_com / (1+z_s)
-            xHI = bubbles.xHI_approx(xHI_01, r_p, R_ion, r_slope=r_slope)        
+            xHI   = C_HII * bubbles.xHI_approx(xHI_01, r_p, R_ion, r_slope=r_slope)        
         else:
             xHI = 1.
             

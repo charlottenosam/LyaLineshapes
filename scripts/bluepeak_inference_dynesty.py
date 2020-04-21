@@ -7,7 +7,7 @@
 #   Started: 2020-04-14 C Mason (CfA)
 # 
 #
-# %run bluepeak_inference_dynesty 'res_nobg' --fix_bg --maxiter 1000
+# %run bluepeak_inference_dynesty 'res_gamma10' --maxiter 100000
 #
 # =====================================================================
 import matplotlib as mpl

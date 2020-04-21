@@ -92,7 +92,7 @@ def lnprior(theta, fix_bg):
     
         if 0. <= fesc <= 1. and 0.2 < C < 10. \
         and -2.5 <= alpha_s <= -1. \
-        and 0 <= gamma_bg_12 <= 10 \
+        and 0 <= gamma_bg_12 <= 20. \
         and -3 < beta < -1:
             return 0.
         else:
@@ -118,7 +118,8 @@ def prior_transform(utheta, args):
         C       = 10.2*uC + 0.2        # 0.2 - 10
         alpha_s = -(1.5*ualpha_s + 1.) #
         beta    = 2*ubeta - 3.         # -3 - -1
-        gamma_bg_12 = 20.*ugamma_bg_12 # 0 - 20 e-12
+        gamma_bg_12 = 10.*ugamma_bg_12 # 0 - 20 e-12
+        # gamma_bg_12 = 20.*ugamma_bg_12 # 0 - 20 e-12
         return fesc, C, alpha_s, beta, gamma_bg_12
 
     
