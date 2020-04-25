@@ -23,7 +23,7 @@ import bubbles
 
 # =====================================================================
 
-def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7.,
+def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7., z_bubble_center=None,
                   inside_HII=True, C_HII=3., 
                   xHI_01=1e-8, R_ion=1.*u.Mpc,
                   r_slope=2.):
@@ -38,7 +38,9 @@ def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7.,
     
     # Observed wavelength
     wave_obs = wave_em * (1. + z_s)
-        
+    if z_bubble_center is None:
+        z_bubble_center = z_s
+                
     # Range of redshifted wavelength and x
     wave_z_ends = wave_obs[:,None]/(1+ztab_ends)
     x_z_ends    = crosssec.Lya_wave_to_x(wave_z_ends).value
@@ -66,8 +68,8 @@ def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7.,
 
         # Residual neutral fraction
         if inside_HII:
-            r_com = bubbles.comoving_distance_from_source_Mpc(ztab, z_s)
-            r_p   = r_com / (1+z_s)
+            r_com = bubbles.comoving_distance_from_source_Mpc(ztab, z_bubble_center)
+            r_p   = r_com / (1+z_bubble_center)
             xHI   = C_HII * bubbles.xHI_approx(xHI_01, r_p, R_ion, r_slope=r_slope)        
         else:
             xHI = 1.
@@ -108,7 +110,7 @@ def make_tau_grid(R_ion, xHI_01, r_slope=2., z_s=7., z_min=6.):
 
 # ------------------------------------------------------------
 
-def optical_depth(wave_em, T, z_min, z_max, z_s=7.,
+def optical_depth(wave_em, T, z_min, z_max, z_s=7., z_bubble_center=None,
                   inside_HII=True, C_HII=3., xtab_len=100,
                   Ndot_ion=1.e57/u.s):
     """
@@ -122,6 +124,8 @@ def optical_depth(wave_em, T, z_min, z_max, z_s=7.,
     
     # Observed wavelength
     wave_obs = wave_em * (1. + z_s)
+    if z_bubble_center is None:
+        z_bubble_center = z_s
         
     # Range of redshifted wavelength and x
     wave_z_ends = wave_obs[:,None]/(1+ztab_ends)
@@ -150,9 +154,9 @@ def optical_depth(wave_em, T, z_min, z_max, z_s=7.,
 
         # Residual neutral fraction
         if inside_HII:
-            r_com = bubbles.comoving_distance_from_source_Mpc(ztab, z_s)
-            r_p   = r_com / (1+z_s)
-            xHI   = bubbles.xHI_R(r=r_p, z_s=z_s, Ndot_ion=Ndot_ion, fesc=1., J_bg=1., C=C_HII, T=T.value)    
+            r_com = bubbles.comoving_distance_from_source_Mpc(ztab, z_bubble_center)
+            r_p   = r_com / (1+z_bubble_center)
+            xHI   = bubbles.xHI_R(r=r_p, z_s=z_bubble_center, Ndot_ion=Ndot_ion, fesc=1., J_bg=1., C=C_HII, T=T.value)    
         else:
             xHI = 1.
             
