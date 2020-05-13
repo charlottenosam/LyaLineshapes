@@ -7,7 +7,8 @@
 #   Started: 2020-04-14 C Mason (CfA)
 # 
 #
-# %run bluepeak_inference_dynesty 'res_gamma10' --maxiter 100000
+# %run bluepeak_inference_dynesty 'res_gamma10_fixNion_fixverr' --maxiter 100000
+# %run bluepeak_inference_dynesty 'res_nobg_gamma10_fixNion_fixverr' --fix_bg --maxiter 100000
 #
 # =====================================================================
 import matplotlib as mpl
@@ -96,8 +97,8 @@ print(' - Saving to',chain_file)
 
 # =====================================================================
 
-vlim, sigma_v, Muv, Muv_err, z, = 250.*u.km/u.s, 60.*u.km/u.s, -21.6, 0.3, 6.6
-
+# vlim, sigma_v, Muv, Muv_err, z, = 250.*u.km/u.s, 60.*u.km/u.s, -21.6, 0.3, 6.6
+vlim, sigma_v, Muv, Muv_err, z, = 250.*u.km/u.s, 10.*u.km/u.s, -21.6, 0.3, 6.6
 
 
 # =====================================================================

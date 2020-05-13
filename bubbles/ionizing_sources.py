@@ -80,18 +80,21 @@ def Muv_to_Nion(Muv, z, alpha_s=-2., beta=-2):
     return Nion.to(1/u.s)
 
 
-def Muv_to_Lnu(Muv, z, beta=-2.):
+def Muv_to_Lnu(Muv, z, beta=-2., Kcorr=False):
     """
     Convert UV magnitude to L_912 (nu)
     """
     
     lum_dist = Planck15.luminosity_distance(z)
 
-    # k-correction http://adsabs.harvard.edu/full/2000A%26A...353..861W
-    K_corr = -((beta + 1) * 2.5 * np.log10(1.0 + z))    
-    
+    if Kcorr:
+        # k-correction http://adsabs.harvard.edu/full/2000A%26A...353..861W
+        K_corr = (beta + 1) * 2.5 * np.log10(1.0 + z)
+    else:
+        K_corr = 0.
+
     # Apparent mag
-    mab = Muv + 5.0 * (np.log10(lum_dist.to(u.pc).value) - 1.0) - K_corr
+    mab = Muv + 5.0 * (np.log10(lum_dist.to(u.pc).value) - 1.0) + K_corr
 
     f0      = 3.631E-20*u.erg/u.s/u.Hz/u.cm**2.
     c       = 3.E5*u.km/u.s
