@@ -97,6 +97,7 @@ def xHI_approx(xHI_01, Rtab, R_HII, r_slope=2.):
     """
     xHI = xHI_01 * (10*Rtab.value)**r_slope
     xHI[Rtab > R_HII+0.001*u.Mpc] = 1.
+    xHI[xHI > 1.] = 1.
     return xHI
     
 #===============================
