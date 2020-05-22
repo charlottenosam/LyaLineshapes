@@ -86,7 +86,7 @@ def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7., z_bubble_center=None,
     return tau
 
 
-def make_tau_grid(R_ion, xHI_01, r_slope=2., z_s=7., z_min=6.):
+def make_tau_grid(R_ion, xHI_01, r_slope=2., z_s=7., z_min=6., C_HII=1.):
     """
     Make tau_HII, tau_IGM, tau_total for grid of R_ion, xHI(r=0.1 Mpc)
     """
@@ -94,12 +94,12 @@ def make_tau_grid(R_ion, xHI_01, r_slope=2., z_s=7., z_min=6.):
 
     # inside bubble
     tau_HII = optical_depth_grid(bubbles.wave_em, z_min=z_ion, z_max=z_s, z_s=z_s,
-                            inside_HII=True, T=1.e4*u.K,
+                            inside_HII=True, T=1.e4*u.K, C_HII=C_HII,
                             xHI_01=xHI_01, R_ion=R_ion, r_slope=r_slope)
 
     # in IGM
     tau_IGM = optical_depth_grid(bubbles.wave_em, z_min=z_min, z_max=z_ion, z_s=z_s,
-                            inside_HII=False, T=1.*u.K,
+                            inside_HII=False, T=1.*u.K, C_HII=C_HII,
                             xHI_01=xHI_01, R_ion=R_ion)
 
     tau_total = tau_IGM + tau_HII

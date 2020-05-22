@@ -41,6 +41,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--r_slope", type=float, help="xHI(r) power law slope [default = 2]")
 parser.add_argument("--z_s", type=float, help="redshift of source [default = 7]")
 parser.add_argument("--z_min", type=float, help="minimum redshift of integral [default = 6]")
+parser.add_argument("--C_HII", type=float, help="clumping factor inside HII region [default = 1]")
 # ---- flags ------
 # parser.add_argument("--noclobber", action="store_true", help="Don't make new LUTs")
 args = parser.parse_args()
@@ -65,6 +66,10 @@ if args.z_min:
     z_min = args.z_min
 print(' - Minimum redshift: z_min = %.1f' % z_min)
 
+C_HII = 1.
+if args.C_HII:
+    C_HII = args.C_HII
+print(' - Clumping factor: C_HII = %.1f' % C_HII)
 # =====================================================================
 
 # R_ion_tab  = np.arange(0.1, 10, 0.2) * u.Mpc
@@ -88,7 +93,8 @@ for i, (R_ion, xHI_01) in enumerate(it.product(R_ion_tab, xHI_01_tab)):
     if (i+1) % 20 == 0:
         print('%.0f %%\t-- ' % (100*float(i+1)/max_iter),R_ion_key, xHI_01_key)
 
-    tau_tab = bubbles.make_tau_grid(R_ion=R_ion, xHI_01=xHI_01, r_slope=r_slope, z_s=z_s, z_min=z_min)
+    tau_tab = bubbles.make_tau_grid(R_ion=R_ion, xHI_01=xHI_01, r_slope=r_slope, C_HII=C_HII,
+                                    z_s=z_s, z_min=z_min)
     tau_HII, tau_IGM, tau_total = tau_tab
     
     tau_total_dict[(R_ion_key, xHI_01_key)] = tau_total
