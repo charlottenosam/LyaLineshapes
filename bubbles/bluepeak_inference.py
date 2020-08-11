@@ -233,7 +233,7 @@ class blue_peak_inference(object):
                 return -np.inf
 
 
-    def prior_transform(utheta, args):
+    def prior_transform(self, utheta):
         """
         for dynesty utheta = U(0,1)
         """
@@ -312,7 +312,7 @@ class blue_peak_inference(object):
         return
 
 
-    def load_dynesty_samples(chain_file, save=False):
+    def load_dynesty_samples(self, chain_file, save=False):
         """Load dynesty samples and get samples + log Z"""
 
         res = pickle.load(open(chain_file, 'rb'))
