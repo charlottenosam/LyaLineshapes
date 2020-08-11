@@ -77,11 +77,9 @@ labels = [r'$f_\mathrm{esc}$', r'$C_\mathrm{HII}$', r'$\alpha$', r'$\beta$', r'$
 labels = [r'$f_\mathrm{esc}$', r'$C_\mathrm{HII}$', r'$\ln{\Delta}$', r'$\alpha$', r'$\beta$', r'$\Gamma_\mathrm{bg} [10^{-12} \mathrm{s}^{-1}]$']
 fix_bg = False
 ndim   = len(labels)
-ptform_args = [[fix_bg]]
 if args.fix_bg:
     fix_bg = True
     ndim   = ndim-1
-    ptform_args = [fix_bg]
     labels = labels[:ndim]
     print(' - Fixing ionizing background')
 else: 
@@ -119,7 +117,6 @@ with ProcessPoolExecutor(max_workers=npool) as executor:
     
     sampler = DynamicNestedSampler(
                             infer.lnlike, infer.prior_transform, ndim, 
-                            ptform_args=ptform_args,
                             pool=executor, queue_size=npool,
                             bound='multi', sample='rwalk')
     
