@@ -67,7 +67,7 @@ def xHI_CenHaiman2000(z, z_s=7., C_HII=3., Ndot_ion=1.e57/u.s):
     
     return xHI
 
-def xHI_R(r, z_s, Ndot_ion, fesc=1., C=3., T=1e4, 
+def xHI_R(r, z_s, Ndot_ion, fesc=1., C=3., Delta=1, T=1e4, 
           J_bg=0., qso=True, alpha=-1.8):
     """
     R is proper distance
@@ -87,7 +87,7 @@ def xHI_R(r, z_s, Ndot_ion, fesc=1., C=3., T=1e4,
     Gamma12_source     = 1./(4. * np.pi * r**2.) * J_source
     Gamma12_background = J_bg * bubbles.Gamma12(z_s) / u.s
 
-    xHI = C * bubbles.n_H(z_s) * bubbles.alpha_rec_B(T)/(Gamma12_background + Gamma12_source)
+    xHI = C * Delta * bubbles.n_H(z_s) * bubbles.alpha_rec_B(T)/(Gamma12_background + Gamma12_source)
     
     return xHI.to(u.s/u.s)
 
@@ -103,18 +103,20 @@ def xHI_approx(xHI_01, Rtab, R_HII, r_slope=2.):
 #===============================
 # Solving ODE
 
-def ionization_front_ionizations(z, Ndot_ion=1.e57/u.s):
-    return (0.75 * Ndot_ion / (np.pi * bubbles.n_H(z))).to(u.Mpc**3./u.yr)
+def ionization_front_ionizations(z, Ndot_ion=1.e57/u.s, Delta=1):
+    return (0.75 * Ndot_ion / (np.pi * Delta * bubbles.n_H(z))).to(u.Mpc**3./u.yr)
 
-def ionization_front_recombinations(z, R=1.*u.Mpc, C=3, T=1e4):
+def ionization_front_recombinations(z, R=1.*u.Mpc, C=3, Delta=1, T=1e4):
+    """Reduction in ionized bubble size due to recombinations"""
     a_B = bubbles.alpha_rec_B(T)
-    return (-a_B * C * bubbles.n_H(z) * R**3.).to(u.Mpc**3./u.yr)
+    return (-a_B * C * Delta * bubbles.n_H(z) * R**3.).to(u.Mpc**3./u.yr)
 
 def ionization_front_Hubble(z, R=1.*u.Mpc):
     return (3* Planck15.H(z) * R**3.).to(u.Mpc**3./u.yr)
 
 def dRion3_dt(t, R3, z_s0=10, Ndot_ion=1.e55/u.s,
-            C=3, T=1e4):
+            C=3, Delta=1, T=1e4, 
+            no_recombinations=False, no_Hubble_expansion=False):
   #         Ndot_ion_type='constant', Ndot_ion_alpha=-2.):
     """
     Rate of growth of R^3 ionization front
@@ -142,17 +144,24 @@ def dRion3_dt(t, R3, z_s0=10, Ndot_ion=1.e55/u.s,
 #     print(t, Ndot_ion)           
     # Components of ionization front growth
     # All in Mpc**3/yr
-    dR3dt_ion = ionization_front_ionizations(z_s0, Ndot_ion=Ndot_ion).value
-    dR3dt_rec = ionization_front_recombinations(z_s0, R=R, C=C, T=T).value
-    dR3dt_Hub = ionization_front_Hubble(z_tab_sourceage, R=R).value
+    dR3dt_ion = ionization_front_ionizations(z_s0, Ndot_ion=Ndot_ion, Delta=Delta).value
+    if no_recombinations:
+        dR3dt_rec = 0.
+    else:
+        dR3dt_rec = ionization_front_recombinations(z_s0, R=R, C=C, Delta=Delta, T=T).value
+    if no_Hubble_expansion:
+        dR3dt_Hub = 0.
+    else:
+        dR3dt_Hub = ionization_front_Hubble(z_tab_sourceage, R=R).value
     
-    return dR3dt_ion - dR3dt_rec + dR3dt_Hub
+    ### Previously had -dR3dt_rec but already was negative!!!
+    return dR3dt_ion + dR3dt_rec + dR3dt_Hub
 
 # =============================
 # Proximity zone
 
 def R_optically_thin(z, Ndot_ion, alpha_s, reccase='B', 
-                     T=1e4*u.K, fesc=1, C=3, tau_lim=2.3, J_bg=0):
+                     T=1e4*u.K, fesc=1, C=3, Delta=1, tau_lim=2.3, J_bg=0):
     """
     Proper radius of Lya optically thin region
     
@@ -167,7 +176,7 @@ def R_optically_thin(z, Ndot_ion, alpha_s, reccase='B',
     else:
         alpha_rec = bubbles.alpha_rec_A(T.value)
 
-    gamma_lim = A * C**2. * bubbles.n_H(z)**2. * alpha_rec / Planck15.H(z) / tau_lim
+    gamma_lim = A * C * Delta**2. * bubbles.n_H(z)**2. * alpha_rec / Planck15.H(z) / tau_lim
     
     R_alpha2 = fesc/4./np.pi * sigma_ion0 * Ndot_ion * (alpha_s/(alpha_s - 3)) / (gamma_lim - J_bg*bubbles.Gamma12(z)/u.s)
     

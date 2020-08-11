@@ -26,7 +26,7 @@ import bubbles
 def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7., z_bubble_center=None,
                   inside_HII=True, C_HII=3., 
                   xHI_01=1e-8, R_ion=1.*u.Mpc,
-                  r_slope=2.):
+                  r_slope=2., constant_z=False):
     """
     Lya optical depth as a function of wavelength 
     using definition of optical depth and Lya cross-section
@@ -78,7 +78,14 @@ def optical_depth_grid(wave_em, T, z_min, z_max, z_s=7., z_bubble_center=None,
         lya_cross = crosssec.Lya_crosssec_x(xtab)
                            
         # Calculate optical depth
-        prefac = (const.c * bubbles.dt_dz(ztab) * xHI * bubbles.n_H(ztab)).to(1./u.cm**2.)
+        if constant_z:
+            nH = bubbles.n_H(z_s)
+            dt_dz = bubbles.dt_dz(z_s)
+        else:
+            nH = bubbles.n_H(ztab)
+            dt_dz = bubbles.dt_dz(ztab)
+
+        prefac = (const.c * dt_dz * xHI * nH).to(1./u.cm**2.)
         dtau   = prefac * lya_cross
             
         tau[ww] = np.trapz(dtau, ztab)

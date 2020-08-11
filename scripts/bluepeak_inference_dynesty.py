@@ -71,12 +71,13 @@ print('###################################################\n')
 # Setup args
 
 labels = [r'$f_\mathrm{esc}$', r'$C_\mathrm{HII}$', r'$\alpha$', r'$\beta$', r'$\Gamma_\mathrm{bg} [10^{-12} \mathrm{s}^{-1}]$']
+labels = [r'$f_\mathrm{esc}$', r'$C_\mathrm{HII}$', r'$\ln{\Delta}$', r'$\alpha$', r'$\beta$', r'$\Gamma_\mathrm{bg} [10^{-12} \mathrm{s}^{-1}]$']
 fix_bg = False
-ndim   = 5
+ndim   = len(labels)
 ptform_args = [[fix_bg]]
 if args.fix_bg:
     fix_bg = True
-    ndim   = 4
+    ndim   = ndim-1
     ptform_args = [fix_bg]
     labels = labels[:ndim]
     print(' - Fixing ionizing background')
