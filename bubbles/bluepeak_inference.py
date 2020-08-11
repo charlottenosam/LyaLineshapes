@@ -236,10 +236,8 @@ class blue_peak_inference(object):
     def prior_transform(self, utheta):
         """
         for dynesty utheta = U(0,1)
-        """
-        fix_bg_bool = args
-        
-        if fix_bg_bool is True:
+        """        
+        if self.fix_bg:
             ufesc, uC, ulnDelta, ualpha_s, ubeta = utheta
             fesc    = (self.prior_bounds['fesc'][1] - self.prior_bounds['fesc'][0])*ufesc + self.prior_bounds['fesc'][0]
             C       = (self.prior_bounds['C'][1] - self.prior_bounds['C'][0])*uC + self.prior_bounds['C'][0]
