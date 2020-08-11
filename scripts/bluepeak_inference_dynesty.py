@@ -9,6 +9,9 @@
 #
 # %run bluepeak_inference_dynesty 'res_gamma10_fixNion_fixverr' --maxiter 100000
 # %run bluepeak_inference_dynesty 'res_nobg_gamma10_fixNion_fixverr' --fix_bg --maxiter 100000
+# %run bluepeak_inference_dynesty 'res_gamma10_fixNion_lnD_fixverr' --maxiter 100000
+# %run bluepeak_inference_dynesty 'res_nobg_gamma10_fixNion_lnD_fixverr' --fix_bg --maxiter 100000
+
 #
 # =====================================================================
 import matplotlib as mpl
@@ -101,7 +104,10 @@ print(' - Saving to',chain_file)
 # vlim, sigma_v, Muv, Muv_err, z, = 250.*u.km/u.s, 60.*u.km/u.s, -21.6, 0.3, 6.6
 vlim, sigma_v, Muv, Muv_err, z, = 250.*u.km/u.s, 10.*u.km/u.s, -21.6, 0.3, 6.6
 
-
+infer = bubbles.blue_peak_inference(vlim, sigma_v, Muv, Muv_err, z, 
+                                    fix_bg=fix_bg, 
+                                    gamma_bg_bounds=[-2., 2.], log_gamma_bg=True,
+                                    C_bounds=[1., 10.], log_C=False)
 # =====================================================================
 
 # if __name__ == '__main__':
@@ -112,8 +118,7 @@ npool = 7
 with ProcessPoolExecutor(max_workers=npool) as executor:
     
     sampler = DynamicNestedSampler(
-                            bubbles.lnlike, bubbles.prior_transform, ndim, 
-                            logl_args=(vlim, sigma_v, Muv, Muv_err, z, fix_bg),
+                            infer.lnlike, infer.prior_transform, ndim, 
                             ptform_args=ptform_args,
                             pool=executor, queue_size=npool,
                             bound='multi', sample='rwalk')
