@@ -121,9 +121,10 @@ with ProcessPoolExecutor(max_workers=npool) as executor:
                             bound='multi', sample='rwalk')
     
     sampler.run_nested(
-    					dlogz_init=0.1, nlive_init=500, 
+    					dlogz_init=0.2, nlive_init=500, 
+                        nlive_batch=100,
     					maxiter=maxiter, 
-    					use_stop=True, 
+    					use_stop=False, 
     					# wt_kwargs={'pfrac': 1.0}
     					)
     
