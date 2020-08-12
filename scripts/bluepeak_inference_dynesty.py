@@ -118,10 +118,10 @@ with ProcessPoolExecutor(max_workers=npool) as executor:
     sampler = DynamicNestedSampler(
                             infer.lnlike, infer.prior_transform, ndim, 
                             pool=executor, queue_size=npool,
-                            bound='multi', sample='rwalk')
+                            bound='multi', sample='unif')
     
     sampler.run_nested(
-    					dlogz_init=0.2, nlive_init=500, 
+    					dlogz_init=0.2, nlive_init=1000, 
                         nlive_batch=100,
     					maxiter=maxiter, 
     					use_stop=False, 
