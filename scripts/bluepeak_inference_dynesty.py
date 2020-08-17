@@ -11,7 +11,7 @@
 # %run bluepeak_inference_dynesty 'res_nobg_gamma10_fixNion_fixverr' --fix_bg --maxiter 100000
 # %run bluepeak_inference_dynesty 'res_gamma10_fixNion_lnD_fixverr' --maxiter 100000
 # %run bluepeak_inference_dynesty 'res_nobg_gamma10_fixNion_lnD_fixverr' --fix_bg --maxiter 100000
-
+# %run bluepeak_inference_dynesty 'res_nobg_gamma10_fixNion_lnD_fixverr_dlogz0.05' --fix_bg --maxiter 10000
 #
 # =====================================================================
 import matplotlib as mpl
@@ -62,6 +62,7 @@ parser.add_argument("file_name", type=str, help="File name, saved in ../chains/"
 parser.add_argument("--maxiter", type=int, help="Max iterations [default = 50000]")
 # ---- flags ------
 parser.add_argument("--fix_bg", action="store_true", help="fix ionizing background [default = False]")
+parser.add_argument("--log_bg", action="store_true", help="use log_gammabg ionizing background [default = False]")
 parser.add_argument("--noplots", action="store_true", help="don't make plots [default = False]")
 args = parser.parse_args()
 # =====================================================================
@@ -76,6 +77,7 @@ print('###################################################\n')
 labels = [r'$f_\mathrm{esc}$', r'$C_\mathrm{HII}$', r'$\alpha$', r'$\beta$', r'$\Gamma_\mathrm{bg} [10^{-12} \mathrm{s}^{-1}]$']
 labels = [r'$f_\mathrm{esc}$', r'$C_\mathrm{HII}$', r'$\ln{\Delta}$', r'$\alpha$', r'$\beta$', r'$\Gamma_\mathrm{bg} [10^{-12} \mathrm{s}^{-1}]$']
 fix_bg = False
+log_bg = False
 ndim   = len(labels)
 if args.fix_bg:
     fix_bg = True
@@ -84,6 +86,12 @@ if args.fix_bg:
     print(' - Fixing ionizing background')
 else: 
     print(' - Free ionizing background')
+
+if args.log_bg:
+    log_bg = True
+    print(' - Log ionizing background')
+else: 
+    print(' - Linear ionizing background')
 
 maxiter = 50000
 if args.maxiter:
@@ -104,7 +112,7 @@ vlim, sigma_v, Muv, Muv_err, z, = 250.*u.km/u.s, 10.*u.km/u.s, -21.6, 0.3, 6.6
 
 infer = bubbles.blue_peak_inference(vlim, sigma_v, Muv, Muv_err, z, 
                                     fix_bg=fix_bg, 
-                                    gamma_bg_bounds=[-2., 2.], log_gamma_bg=True,
+                                    gamma_bg_bounds=[-2., 2.], log_gamma_bg=log_bg,
                                     C_bounds=[1., 10.], log_C=False)
 # =====================================================================
 
