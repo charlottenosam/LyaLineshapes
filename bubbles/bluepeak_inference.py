@@ -46,7 +46,7 @@ class blue_peak_inference(object):
     """
 
     def __init__(self, vlim, sigma_v, Muv, Muv_err, z, fix_bg,
-                    fesc_bounds=[0.,1.], C_bounds=[0.1, 10.],
+                    fesc_bounds=[0.,1.], C_bounds=[1, 10.],
                     sigma0=1.,
                     alpha_bounds=[-2.5,-1.], beta_bounds=[-3,-1],
                     gamma_bg_bounds=[0.,20.], gamma_bg_rescale=1e-12,
@@ -241,7 +241,7 @@ class blue_peak_inference(object):
             ufesc, uC, ulnDelta, ualpha_s, ubeta = utheta
             fesc    = (self.prior_bounds['fesc'][1] - self.prior_bounds['fesc'][0])*ufesc + self.prior_bounds['fesc'][0]
             C       = (self.prior_bounds['C'][1] - self.prior_bounds['C'][0])*uC + self.prior_bounds['C'][0]
-            lnDelta = scipy.stats.norm.pdf(ulnDelta, loc=-0.5*self.prior_bounds['sigma0']**2., scale=self.prior_bounds['sigma0'])
+            lnDelta = scipy.stats.norm.pdf(10*ulnDelta-5, loc=-0.5*self.prior_bounds['sigma0']**2., scale=self.prior_bounds['sigma0'])
             alpha_s = (self.prior_bounds['alpha_s'][1] - self.prior_bounds['alpha_s'][0])*ualpha_s + self.prior_bounds['alpha_s'][0]
             beta    = (self.prior_bounds['beta'][1] - self.prior_bounds['beta'][0])*ubeta + self.prior_bounds['beta'][0]
             return fesc, C, lnDelta, alpha_s, beta      
@@ -249,7 +249,7 @@ class blue_peak_inference(object):
             ufesc, uC, ulnDelta, ualpha_s, ubeta, ugamma_bg = utheta
             fesc     = (self.prior_bounds['fesc'][1] - self.prior_bounds['fesc'][0])*ufesc + self.prior_bounds['fesc'][0]
             C        = (self.prior_bounds['C'][1] - self.prior_bounds['C'][0])*uC + self.prior_bounds['C'][0]
-            lnDelta  = scipy.stats.norm.pdf(ulnDelta, loc=-0.5*self.prior_bounds['sigma0']**2., scale=self.prior_bounds['sigma0'])
+            lnDelta  = scipy.stats.norm.pdf(10*ulnDelta-5, loc=-0.5*self.prior_bounds['sigma0']**2., scale=self.prior_bounds['sigma0'])
             alpha_s  = (self.prior_bounds['alpha_s'][1] - self.prior_bounds['alpha_s'][0])*ualpha_s + self.prior_bounds['alpha_s'][0]
             beta     = (self.prior_bounds['beta'][1] - self.prior_bounds['beta'][0])*ubeta + self.prior_bounds['beta'][0]
             gamma_bg = (self.prior_bounds['gamma_bg'][1] - self.prior_bounds['gamma_bg'][0])*ugamma_bg + self.prior_bounds['gamma_bg'][0]
