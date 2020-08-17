@@ -121,7 +121,7 @@ with ProcessPoolExecutor(max_workers=npool) as executor:
                             bound='multi', sample='unif')
     
     sampler.run_nested(
-    					dlogz_init=0.2, nlive_init=1000, 
+    					dlogz_init=0.05, nlive_init=1000, 
                         nlive_batch=100,
     					maxiter=maxiter, 
     					use_stop=False, 
