@@ -112,7 +112,7 @@ vlim, sigma_v, Muv, Muv_err, z, = 250.*u.km/u.s, 10.*u.km/u.s, -21.6, 0.3, 6.6
 
 infer = bubbles.blue_peak_inference(vlim, sigma_v, Muv, Muv_err, z, 
                                     fix_bg=fix_bg, 
-                                    gamma_bg_bounds=[-2., 2.], log_gamma_bg=log_bg,
+                                    gamma_bg_bounds=[0., 20.], log_gamma_bg=log_bg,
                                     C_bounds=[1., 10.], log_C=False)
 # =====================================================================
 
