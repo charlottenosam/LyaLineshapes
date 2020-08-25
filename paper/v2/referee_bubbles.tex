@@ -1,0 +1,107 @@
+Aug 18, 2020
+ 
+ 
+Dear Referee,
+ 
+Please find below our response to your comments for our submission "Measuring the properties of reionised bubbles with resolved Lyman alpha spectra" to MNRAS. 
+
+We would like to thank you for your constructive comments which have improved the paper. Given your comments, and some discussions with our colleagues we now provide an updated version, with edits marked up in the PDF (new text in green bold, removed text in grey strikethrough).
+
+We note that since submission we discovered an error in our calculation of the ionizing emissivity of sources from UV magnitude (eqn 9) which caused an overestimate of the emissivity, which is now corrected. In discussion with colleagues we have also revised our definitions of gas overdensity / clumping factor in a way that is more consistent with previous work. These two modifications have introduced a new parameter (gas overdensity inside the ionized bubble, Delta), and our result that COLA1 must have a large ionizing photon escape fraction and low gas density are more strongly preferred.
+
+Below we detail our responses to your specific comments. In the following, our comments are surrounded by == ==.
+
+Yours faithfully,
+
+
+Charlotte Mason & Max Gronke
+
+========================================================
+Reviewer's Comments:
+I have been asked to review the paper "Measuring the properties of reionised bubbles with resolved Lyman-alpha spectra". The paper refines an approach to use information from the Lyman alpha line shape for estimating the size of ionized bubbles around galaxies in the epoch of reionization. It is well known that the blue part of the Lyman-alpha line escaping the ISM is prone to be scattered in the surrounding IGM if it is sufficiently neutral. Thus, knowing that an emitter shows blueward emission, one can give a lower limit on the size of the optically thin region around the emitter. In contrast to previous work, the authors take into account that what is measured is not the size of the ionized bubble, but the (smaller) size of the optically-thin (that is, optically thin for Lyman alpha) bubble in the center of the ionized region.
+
+The paper is well-written and suited for publication after moderate revision. I will make some general remarks and then list some detailed remarks the authors might want to address.
+---------------------------------------------
+
+- precise reasoning:
+I think the reasoning needs to be made more precise. What is it telling us if we observe a peak bluewards of the systemic velocity, and what does it tell us if we don't? The answer to the latter question would be 'nothing' as far as I understand, because the lack of blue emission could either come from scatterings in the IGM or from absorption in the ISM. While I am following here, a reader not so familiar with the Lyman alpha line will likely have trouble understanding this. I would suggest that you devote a paragraph on making the argument very clear before you introduce the model, stating also the model assumptions. A cartoon of the problem (emitter, ionized bubble, optically thin region) could help as well.
+===========
+We agree with the referee that we need to be clearer about the reasoning and the conclusions we can draw from non-detection of blue flux. We have added the following to the beginning of Section 2.
+
+The model provides a way to interpret the necessary conditions to observe a blue-shifted \lya peak emerging from a galaxy at $z\simgt6$. Of course, there are numerous scattering processes in the ISM, CGM and IGM which can absorb a blue peak at any redshift \citep[e.g.,][]{Gunn1965,Zheng2010,Laursen2011}, meaning that non-detection of a blue peak does not provide much information about any one of those media. However, in the rare cases where blue \lya flux \textit{has} made it through a relatively neutral IGM, this model demonstrates that constraints can be placed on the line-of-sight gas properties in front of the source, in particular, that for blue flux to have been detected at $z\simgt6$, the source must reside in a highly ionised region.
+===========
+
+Secondly, when you present your main results in Fig. 5/section 3.2., you should clarify what you mean by your estimate being model-independent, and clarify the relation of this estimate and the preceding sections.
+===========
+We have added clarification to the beginning of section 3.2
+===========
+
+
+- ISM effect on the line shape
+This is a point very much related. The spectrum escaping the ISM is the one that is processed in the surroundings of your emitter. Given the accretion in such early galaxies I would e.g. expect a strong blue peak. How does that change your prospects? What if it is red-peaked, without any blue peak? So, please make clear how the ISM line shape affects your arguments.
+===========
+We agree with the referee that all our transmission curves process the "intrinsic" Lya line, i.e., the one that has already been shaped by radiative transfer inside the ISM / CGM. In principle, this intrinsic spectrum of such high-z sources is unknown, and indeed one could think about a range of feasible intrinsic spectra -- including double peaked ones with dominant blue side due to stronger inflows as noted by the referee. While for our work this would be most constraining, i.e., ideal case, several indications point towards the fact that the intrinsic Lya spectra at high-z are not too different compared to lower-z, that is, with a dominant red side as noted, e.g., by Matthee et al. (2017) [1]. In contrast to that, a single-red peak would be the most sub-optimal case as this is the least constraining (cf. figure 5).
+
+To capture these points, we added the following to section 4.1:
+"Naturally, the above discussion depends on the `intrinsic' Lya line, i.e., the one shaped by radiative transfer in the ISM / CGM with the most and least constraining intrinsic lines (see Figure 5) being a wide double peak (with significant flux on the blue side), and a single red peak with large velocity offset, respectively. While in principle, the intrinsic spectrum (and its evolution) is unknown, we can assume a similar fraction of $\sim 20-50\%$ of intrinsic spectra with significant blue flux -- as seen in low redshift observations (Yamada et al. 2012; Henry et al. 2015; Yang et al. 2016; Rivera-Thorsen et al. 2015; Erb et al. 2014; Herenz et al. 2017). The assumption of weak evolution in the blue peak fraction with redshift is supported by high-z studies that find similar spectral properties to low redshift galaxies (Matthee et al. 2017; Songaila et al. 2018), and would only affect our estimates, e.g., on the number of detected Lya emitters with a blue peak by a factor of $\sim 2$."
+===========
+
+- substructure in the surroundings of the emitter, 'source confusion'
+One thing that worries me is that you assume (in your model) that there are no (star-forming) clumps or satellites within the ionized or optically thin region. As these regions are huge and we are at high redshifts, I assume you might have effects from such companions. You should discuss what effects you would expect. Maybe you can even given an estimate of how many satellites of a given mass you would expect. Two effects would be; the satellites could contribute to the Lyman alpha spectrum (that you attribute to the host), and they could contribute to the ionized bubble size. While you discuss using those other emitters within the zone to learn more about the extent of the zone, you do not discuss the potential problems.
+
+===========
+The question raised by the referee regarding `satellites' is an interesting one. We agree that the impact of satellites is two-fold: (1) contribution to the ionizing emissivity, thus, impacting the structure and extend of the ionized region, and (2) additional Lya flux contributing to the spectrum.
+The former is accounted for in the model as Gamma_bg. We clarified this by adding "(e.g., satellite galaxies in the vicinity of the central source)" after "...other ionising sources nearby" in section 2.2.2.
+For the latter, we agree that `peak confusing' is a potential danger, that is, our analysis assumes that peaks can be associated to a specific galaxy. While full certainty is only achievable by measuring the Lya line prior to radiative transfer, e.g., through Ha, we note that (a) radiative transfer allows only for certain peak-widths / offset combinations which would require the confusion of, e.g., a blue peak stemming from a satellite quite some fine-tuning, and (b) at lower-z this is only discussed for a handful of cases (e.g., Vanzella et al. 2020, [2]). 
+
+[MG: Not sure if / how you want to mention this in the text. I think this is quite niche and I am happy to tell this the referee & say we thus do not discuss this.]
+===========
+
+- capabilities to constrain bubble sizes:
+Something that did not come out clearly in the discussion is whether or not your consideration of the optically thin radius instead of the radius of the ionized region is actually hurting our prospects to estimate the ionized radius. After all, this is what we want to know for constraining reionization. In other words, as what we measure is the radius at which the gas becomes optically thick, can we relate this directly to the radius of the ionized bubble, or does this pose another source of uncertainty?
+===========
+We apologise if this was unclear. Essentially, as show in Figure 5, our observations always provide lower limits on R_ion (the ionized bubble radius) and upper limits on x_HI (the residual neutral fraction). We have added more text to explain this at the beginning of Section 3.2 and to Section 4.1. The true ionized bubble radius acts as an outer envelope for the transmission, which decreases as the residual neutral fraction increases (= optically thin radius decreases, see Figure 1, right panel). With red peaks we don't need to worry about the optically thin radius and thus they can provide good lower limits on the ionized radius as described in Section 4.1
+===========
+
+- instrumental requirements
+Please be more detailed on what the requirements on spectra are to be able to constrain the size of the bubbles. This does not need to a full paragraph, I just missed that information.
+===========
+We have added the following information to Section 4.1: "To accurately measure double-peaked \lya line shapes requires a spectral resolution $R\simgt4000$ with S/N$/simgt2$ per pixel \citep[e.g.,][]{Verhamme2015}."
+===========
+
+- blue peaks at low z:
+This is related to the point on the ISM lineshape; if one takes your model at face value, one may come to the conclusion that we should see blue peaks everywhere at low z. Please comment on the applicability of the model to low redshift, z~2 or so.
+===========
+Related to the comment above. Indeed, ~20-40\% of Lya spectra at lower z possess a blue peak (the definition varies due to changed spectral quality). For instance,  Yamada et al. (2012) find that approximately half their sample of 91 Lya emitting galaxies at z ∼ 3.1 possess a double peak.  Similarly, Herenz et al. (2017) report that ∼ 35\% of the 237 from the MUSE Wide survey show a blue peak. Trainor et al. (2015) measured this number to be  ~45\% in their z~2-3 sample.
+At even lower z, for instance, the ~10 `Green pea galaxies' (Henry et al. 2015; Yang et al. 2016) show in ∼half the galaxies a clear blue peak.
+While these numbers support the newly added paragraph mentioned above, our model is not applicable at lower-z as the ionized regions percolated earlier. Thus, the notion of `ionized bubbles' does not exist anymore.
+===========
+
+Detailed comments:
+    ** All addressed, with specific comments surrounded by ===
+p2, left:
+20 - "(~ the age of the Universe)": please expand the sentence, it is unclear to me.
+p2, right:
+48 - CHII is defined twice, it is unclear what is meant.
+51 - is T = 1K a typo?
+=== No. This is the temperature of the neutral IGM assuming baryons are thermally coupled to the CMB until z~150 and cools adiabatically (1+z)^2 thereafter (e.g. Peebles 1993). Our results are not sensitive to this temperature providing T<10^5 K, which is the case for the pre-reionization IGM. ===
+p3, left:
+44 -"300 km/s" - that number is inconsistent with the caption in Fig 1.
+p4, left:
+35 - please expand the last sentence in the section, it is very difficult to read.
+p5, left:
+14 - you define J_s after you have used it
+33 - "high resonant cross section": please rephrase.
+p5, right:
+9 - clarify how equation 13 follows from the preceding paragraphs (you write "R_alpha can _thus_ be estimated[...]"!)
+p6, right:
+52 - you use the word proximity zone before, but please clarify (somewhere) that you will refer to the optically region by this term in this paper. I am unsure whether it is wise to use this term, as it might lead to confusion. However, this is up to you.
+p7, left:
+35 - "To observe a blue peak <equation>": please expand the sentence. This is very hard to read.
+others:
+You use the term "resonant absorption". Please define it.
+=== Now defined in paragraph 5 of the introduction ===
+
+** References
+[1] https://ui.adsabs.harvard.edu/abs/2017MNRAS.472..772M/abstract
+[2] https://ui.adsabs.harvard.edu/abs/2020MNRAS.491.1093V/abstract
