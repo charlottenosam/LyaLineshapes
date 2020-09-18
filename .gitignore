@@ -9,3 +9,5 @@ chains/
 *.idea
 *.key
 *.tar*
+*.zip
+*/old/
