@@ -12,3 +12,5 @@ chains/
 *.zip
 */old/
 data/
+paper/accepted/00README.xxx.txt
+paper/accepted/ms_bubbles.bbl
