@@ -7,3 +7,5 @@ chains/
 *.sh
 *.DS_Store
 *.idea
+*.key
+*.tar*
