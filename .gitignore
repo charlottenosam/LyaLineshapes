@@ -8,6 +8,7 @@ chains/
 *.DS_Store
 *.idea
 *.key
-*.tar*
+*.tar
 *.zip
 */old/
+data/
