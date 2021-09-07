@@ -2,14 +2,14 @@
 # ionizing_background.py
 #
 # Ionizing sources model
-# 
+#
 # --------------------
 # Ionizing background model Khaire & Srianand 2019
 #
-# [Khaire & Srianand 2019](https://arxiv.org/abs/1801.09693) 
-# fiducial quasar SED $\alpha=-1.8$. 
-# 
-# Which was found to reproduce the measured He II Lyman-α effective optical 
+# [Khaire & Srianand 2019](https://arxiv.org/abs/1801.09693)
+# fiducial quasar SED $\alpha=-1.8$.
+#
+# Which was found to reproduce the measured He II Lyman-α effective optical
 # depths as a function of z and the epoch of He II reionization
 # --------------------
 #
@@ -38,9 +38,10 @@ h_erg_s = (const.h).to(u.erg * u.s)
 # =====================================================================
 
 # ---------------------------------------
-# Ionizing background model
+# Ionizing background model Khaire & Srianand 2019
+# [Khaire & Srianand 2019](https://arxiv.org/abs/1801.09693)
 
-KS2019  = np.genfromtxt('../data/KS_2018_EBL/parameters_Q18.txt', skip_header=4)
+KS2019  = np.genfromtxt(bubbles.base_path+'bubbles/parameters_Q18.txt', skip_header=4)
 Gamma12 = interpolate.interp1d(KS2019[:,0], KS2019[:,1])
 
 def plot_Gamma12_bg():
@@ -74,7 +75,7 @@ def Muv_to_Nion(Muv, z, alpha_s=-2., beta=-2):
     """
     Convert Muv to Nion [s^-1]
     """
-    
+
     Lnu_912 = Muv_to_Lnu(Muv, z, beta=beta)
     Nion    = Lnu_912/const.h/-alpha_s
     return Nion.to(1/u.s)
@@ -84,7 +85,7 @@ def Muv_to_Lnu(Muv, z, beta=-2., Kcorr=False):
     """
     Convert UV magnitude to L_912 (nu)
     """
-    
+
     lum_dist = Planck15.luminosity_distance(z)
 
     if Kcorr:
@@ -99,10 +100,9 @@ def Muv_to_Lnu(Muv, z, beta=-2., Kcorr=False):
     f0      = 3.631E-20*u.erg/u.s/u.Hz/u.cm**2.
     c       = 3.E5*u.km/u.s
     wave912 = 912.*u.Angstrom
-    
+
     fnu_1500 = f0 * 10**(-0.4*mab)
     fnu_912  = fnu_1500 * (wave912/1500/u.Angstrom)**(beta+2.)
     Lnu_912  = fnu_912 * 4*np.pi * lum_dist**2.
-    
-    return Lnu_912.to(u.erg/u.s/u.Hz)
 
+    return Lnu_912.to(u.erg/u.s/u.Hz)

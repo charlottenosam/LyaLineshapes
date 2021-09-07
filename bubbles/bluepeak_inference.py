@@ -30,8 +30,13 @@ from multiprocessing import Pool
 
 # Dynesty imports
 import pickle
-import dynesty
-from dynesty import utils as dyfunc
+
+try:
+    import dynesty
+    from dynesty import utils as dyfunc
+except ImportError as e:
+    print('WARNING: dynesty not installed, required to do blue peak inference')
+    pass  # module doesn't exist, deal with it.
 
 import bubbles
 
@@ -77,8 +82,8 @@ class blue_peak_inference(object):
         self.R_obs_err = np.abs(self.sigma_v / Planck15.H(self.z)).to(u.Mpc)
 
         # labels
-        self.labels = [r'$f_\mathrm{esc}$', r'$C_\mathrm{HII}$', r'$\Delta$', 
-                        r'$\alpha$', r'$\beta$', 
+        self.labels = [r'$f_\mathrm{esc}$', r'$C_\mathrm{HII}$', r'$\Delta$',
+                        r'$\alpha$', r'$\beta$',
                         r'$\Gamma_\mathrm{bg} [10^{-12} \mathrm{s}^{-1}]$']
 
         # Use log (gamma s^-1)?
@@ -124,7 +129,7 @@ class blue_peak_inference(object):
         assert ndim == self.ndim, 'Wrong number of dimensions!'
 
         with Pool() as pool:
-            sampler = emcee.EnsembleSampler(nwalkers, ndim, self.lnposterior, 
+            sampler = emcee.EnsembleSampler(nwalkers, ndim, self.lnposterior,
                                             pool=pool)
             start = time.time()
             sampler.run_mcmc(pos, Nsteps, progress=True)
@@ -146,23 +151,23 @@ class blue_peak_inference(object):
         if np.isfinite(self.lnprior(theta)):
             return self.lnlike(theta)+self.lnprior(theta)
         else:
-            return -np.inf    
+            return -np.inf
 
 
     def lnlike(self, theta):
         """
         Likelihood for observing vlim+sigma_v given theta
-        
+
         Likelihood is that R_alpha > vlim/H(z) --> erfc
-        
+
         """
-        
+
         if self.fix_bg is True:
             fesc, C, lnDelta, alpha_s, beta = theta
             J_bg = 0.
-        
+
         else:
-            fesc, C, lnDelta, alpha_s, beta, gamma_bg = theta    
+            fesc, C, lnDelta, alpha_s, beta, gamma_bg = theta
             if self.log_gamma_bg:
                 # NOT /10^-12
                 gamma_bg = 10**gamma_bg
@@ -174,20 +179,20 @@ class blue_peak_inference(object):
 
         if self.log_C:
             C = 10**C
-        
+
         # Ionizing photon flux
         Muv_draw = np.random.normal(loc=self.Muv, scale=self.Muv_err)
         Ndot_ion = bubbles.Muv_to_Nion(Muv_draw, self.z, alpha_s=alpha_s, beta=beta)
-        
+
         # Model proximity zone radius
-        R_mod = bubbles.R_optically_thin(self.z, Ndot_ion=Ndot_ion, alpha_s=alpha_s, 
+        R_mod = bubbles.R_optically_thin(self.z, Ndot_ion=Ndot_ion, alpha_s=alpha_s,
                                          fesc=fesc, C=C, Delta=Delta,
-                                         reccase='B', T=1e4*u.K, tau_lim=2.3, 
+                                         reccase='B', T=1e4*u.K, tau_lim=2.3,
                                          J_bg=J_bg)
-        
+
         if np.isnan(R_mod.value):
             R_mod = np.inf * u.Mpc
-        
+
         likelihood = 0.5 * scipy.special.erfc((self.R_obs - R_mod) / np.sqrt(2.) / self.R_obs_err)
 
         return np.log(likelihood)
@@ -216,7 +221,7 @@ class blue_peak_inference(object):
                 return p_lnDelta
             else:
                 return -np.inf
-            
+
         else:
             fesc, C, lnDelta, alpha_s, beta, gamma_bg = theta
 
@@ -236,7 +241,7 @@ class blue_peak_inference(object):
     def prior_transform(self, utheta):
         """
         for dynesty utheta = U(0,1)
-        """        
+        """
         if self.fix_bg:
             ufesc, uC, ulnDelta, ualpha_s, ubeta = utheta
             fesc    = (self.prior_bounds['fesc'][1] - self.prior_bounds['fesc'][0])*ufesc + self.prior_bounds['fesc'][0]
@@ -244,7 +249,7 @@ class blue_peak_inference(object):
             lnDelta = scipy.stats.norm.ppf(ulnDelta, loc=-0.5*self.prior_bounds['sigma0']**2., scale=self.prior_bounds['sigma0'])
             alpha_s = (self.prior_bounds['alpha_s'][1] - self.prior_bounds['alpha_s'][0])*ualpha_s + self.prior_bounds['alpha_s'][0]
             beta    = (self.prior_bounds['beta'][1] - self.prior_bounds['beta'][0])*ubeta + self.prior_bounds['beta'][0]
-            return fesc, C, lnDelta, alpha_s, beta      
+            return fesc, C, lnDelta, alpha_s, beta
         else:
             ufesc, uC, ulnDelta, ualpha_s, ubeta, ugamma_bg = utheta
             fesc     = (self.prior_bounds['fesc'][1] - self.prior_bounds['fesc'][0])*ufesc + self.prior_bounds['fesc'][0]
@@ -255,13 +260,13 @@ class blue_peak_inference(object):
             gamma_bg = (self.prior_bounds['gamma_bg'][1] - self.prior_bounds['gamma_bg'][0])*ugamma_bg + self.prior_bounds['gamma_bg'][0]
             return fesc, C, lnDelta, alpha_s, beta, gamma_bg
 
-        
+
 # ------------------------------------------------------------
 
     def plot_emcee_chains(self, sampler):
         """Plot chains"""
         samples = sampler.get_chain()
-        
+
         fig, axes = plt.subplots(self.ndim, figsize=(8, self.ndim*2), sharex=True)
 
         for i in range(self.ndim):
@@ -282,7 +287,7 @@ class blue_peak_inference(object):
 
         Lines show 1,2,3 sigma regions
 
-        Autocorrelation time suggests that only about X steps 
+        Autocorrelation time suggests that only about X steps
         are needed for the chain to “forget” where it started.
 
         It’s not unreasonable to throw away a few times this number of steps as “burn-in”.
@@ -296,14 +301,14 @@ class blue_peak_inference(object):
 
         fig, ax = plt.subplots(self.ndim, self.ndim, figsize=(self.ndim+1.4, self.ndim+1.5), dpi=150)
         corner.corner(flat_samples, fig=fig,
-                        labels=self.labels, smooth=smooth, 
+                        labels=self.labels, smooth=smooth,
                         color='Teal', use_math_text=True,
-                        plot_datapoints=False, plot_density=False, 
+                        plot_datapoints=False, plot_density=False,
                         fill_contours=True, hist_kwargs={'lw':2},
                         levels = 1.0 - np.exp(-0.5 * np.array([1,2,3]) ** 2),
-                        show_titles=True, 
+                        show_titles=True,
                         label_kwargs={"fontsize": 16})
-        
+
         if plotname is not None:
             plt.savefig(plotname, bbox_inches='tight')
 
@@ -314,12 +319,12 @@ class blue_peak_inference(object):
         """Load dynesty samples and get samples + log Z"""
 
         res = pickle.load(open(chain_file, 'rb'))
-        
+
         samples = res.samples  # samples
         weights = np.exp(res.logwt - res.logz[-1])  # normalized weights
         samples = dyfunc.resample_equal(samples, weights) # Resample weighted samples.
-        
+
         if save:
             np.save(chain_file.replace('.pickle','_samples'), samples)
-            
+
         return samples, res.logz[-1]

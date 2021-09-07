@@ -1,5 +1,8 @@
 import os
 
+code_path = os.path.abspath(os.path.dirname(__file__))
+base_path = code_path.strip(code_path.split('/')[-1])
+
 from .utils import *
 from .lya_cross_section import *
 from .ionizing_sources import *
