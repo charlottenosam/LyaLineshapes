@@ -34,7 +34,7 @@ wave_em  = np.linspace(1210, 1220., 1000) * u.Angstrom
 # =====================================================================
 
 def n_H(z, X_p=0.75):
-    """IGM hydrogen number density
+    """IGM hydrogen proper number density
 
     Args:
         z (ndarray): redshift
@@ -52,10 +52,10 @@ def n_H(z, X_p=0.75):
 
 def alpha_rec_B(T):
     """Recombination rate for `case B` recombination of hydrogen.
- 
+
        Fitting formulae from Hui & Gnedin (1997) (in the Appendix)
        accurate to ~0.7% from 1 - 10^9K
-     
+
         input T unitless (but in K)
        Returns recombination rate in cm**3/s
     """
@@ -66,10 +66,10 @@ def alpha_rec_B(T):
 
 def alpha_rec_A(T):
     """Recombination rate for `case A` recombination of hydrogen.
- 
+
        Fitting formulae from Hui & Gnedin (1997) (in the Appendix)
        accurate to ~2% from 3 - 10^9K
-     
+
         input T unitless (but in K)
 
        Returns recombination rate in cm**3/s
@@ -97,6 +97,7 @@ def z_at_proper_distance(R_p, z_1=7.):
     R_com = R_p * (1+z_1)
     return z_1 - R_com/R_H
 
+
 # def z_at_comoving_distance(R_com, z_1=7.):
 #     R_H = (const.c / Planck15.H(z=z_1)).to(u.Mpc)
 #     return z_1 - R_com/R_H
@@ -115,22 +116,22 @@ def DV_to_wave(DV):
 def make_DV_axes(ax_wave, x, y, DV_min=-1000., DV_max=1000.):
     # Make axis
     ax_DV = ax_wave.twiny()
-    
+
     # Plot
     ax_DV.plot(x, y, lw=0)
 
     # Set xlims
     ax_DV.set_xlim(DV_min, DV_max)
     ax_wave.set_xlim(bubbles.DV_to_wave(np.array(ax_DV.get_xlim())*u.km/u.s).value)
-    
+
     ax_DV.set_xlabel(r'Velocity offset, $\Delta v$ [km/s]')
-    
+
     return ax_DV
 
 def lineshape_doublepeak(v, vcenter):
     """
     Gaussian line shape
-    
+
     :param v:        velocity offset from systemic
     :param vcenter:  center of gaussian in v
 
@@ -138,7 +139,7 @@ def lineshape_doublepeak(v, vcenter):
     """
     fwhm  = vcenter
     sigma = fwhm/2.355
-    
+
     if vcenter == 0:
         sigma = 10/2.355
         line = 0.3989422804014327 * np.exp(-0.5*((v + vcenter)/sigma)**2.) / sigma
@@ -173,6 +174,6 @@ def dict_to_image(dictionary, x, y):
     image = np.zeros((len(y), len(x)))
     for (i, yy), (j, xx) in it.product(enumerate(y), enumerate(x)):
         image[i, j] = dictionary[(xx,yy)]
-        
+
     return image
 # ---------------------------------------------------------------------
